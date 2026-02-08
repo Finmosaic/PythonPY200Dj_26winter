@@ -19,7 +19,7 @@
 					<h4 class="text-center mb-4">
 						Заголовок вашей формы
 					</h4>
-					<form method="post">
+					<form action="" method="post">
                         {% csrf_token %}
 						<!-- Запишите здесь тег {% csrf_token %} -->
 
@@ -43,6 +43,32 @@
                         <div class="form-input">
                             <textarea id="my_textarea" name="my_textarea" rows="10" placeholder="Начни писать здесь" required></textarea>
                         </div>
+						<!-- Новый блок -->
+						 <label for="my_email">Введи свою почту</label>
+                        <div class="form-input">
+                            <input type="email" id="my_email" name="my_email" placeholder="test@test.ru" required></inputtextarea>
+                        </div>
+
+						 <label for="my_password">Введи пароль</label>
+                        <div class="form-input">
+                            <input type="password" id="my_password" name="my_password"  placeholder="" required>
+                        </div>
+
+						 <label for="my_date">Введи дату рождения</label>
+                        <div class="form-input">
+							<span><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                            <input type="date" id="my_date" name="my_date"  placeholder="" required>
+                        </div>
+
+						 <label for="my_number">Введи целое число</label>
+                        <div class="form-input">
+                            <input type="number" id="my_number" name="my_number" placeholder="" required>
+                        </div>
+
+						 <label for="my_checkbox">Выбрать</label>
+                        <div class="form-input">
+                            <input type="checkbox" id="my_checkbox" name="my_checkbox"  required>
+                        </div>
 
                         <!-- Добавьте своих полей --------------------------------------------------------------------->
                         <!-- Сформируйте и заполните нужные строки ввода (оберните их <div class="form-input"> как показано выше. Это нужно чтобы были одинаковые стили)-->
@@ -59,7 +85,12 @@
                         <!--------------------------------------------------------------------------------------------->
 
                         <!-- В форме всегда присутствует кнопка чтобы что-то отправить. Кнопку не изменять! -->
-						<div class="mb-3"> 
+						{% if form.errors %}
+						<div class="mb-3 d-flex align-items-center">
+							<span style="color: red; font-size: 16px">{{ form.errors }}</span>
+						</div>
+						{% endif %}
+						<div class="mb-3">
 							<button type="submit" class="btn btn-block">
 								Отправить данные
 							</button>
