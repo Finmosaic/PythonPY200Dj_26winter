@@ -1,10 +1,15 @@
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.shortcuts import render
+from django.views.generic import TemplateView, FormView
+
 from .models import get_random_text
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import redirect
 from django.contrib.auth import login, logout, authenticate
 from .forms import TemplateForm, CustomUserCreationForm
+from django.views import View
+from django.contrib.auth.views import LoginView
+
 
 
 def template_view(request):
@@ -40,6 +45,69 @@ def template_view(request):
                                       my_checkbox], safe=False, json_dumps_params={'ensure_ascii': False, 'indent': 4})
         return render(request, template_name='app/template_form.html', context={'form': form})
 
+class MyTemplView(View):
+    def get(self, request):
+        return render(request, 'app/template_form.html')
+
+    def post(self, request):
+        received_data = request.POST  # Приняли данные в словарь
+
+        form = TemplateForm(received_data)  # Передали данные в форму
+        if form.is_valid():  # Проверили, что данные все валидные
+            form = TemplateForm(request.POST)
+            if form.is_valid():
+                my_text = form.cleaned_data.get('my_text')
+                my_select = form.cleaned_data.get('my_select')
+                my_textarea = form.cleaned_data.get('my_textarea')
+                my_email = form.cleaned_data.get('my_email')
+                my_password = form.cleaned_data.get('my_password')
+                my_date = form.cleaned_data.get('my_date')
+                my_number = form.cleaned_data.get('my_number')
+                my_checkbox = form.cleaned_data.get('my_checkbox')
+
+                return JsonResponse(data=[my_text, my_select, my_textarea, my_email, my_password, my_date, my_number,
+                                      my_checkbox], safe=False, json_dumps_params={'ensure_ascii': False, 'indent': 4})
+            return render(request, template_name='app/template_form.html', context={'form': form})
+
+
+
+
+class MyTemplateView(TemplateView):
+    template_name = 'app/template_form.html'
+
+    def post(self, request, *args, **kwargs):
+        received_data = request.POST  # Приняли данные в словарь
+
+        form = TemplateForm(received_data)  # Передали данные в форму
+        if form.is_valid():  # Проверили, что данные все валидные
+            form = TemplateForm(request.POST)
+            if form.is_valid():
+                my_text = form.cleaned_data.get('my_text')
+                my_select = form.cleaned_data.get('my_select')
+                my_textarea = form.cleaned_data.get('my_textarea')
+                my_email = form.cleaned_data.get('my_email')
+                my_password = form.cleaned_data.get('my_password')
+                my_date = form.cleaned_data.get('my_date')
+                my_number = form.cleaned_data.get('my_number')
+                my_checkbox = form.cleaned_data.get('my_checkbox')
+
+                return JsonResponse(data=[my_text, my_select, my_textarea, my_email, my_password, my_date, my_number,
+                                      my_checkbox], safe=False, json_dumps_params={'ensure_ascii': False, 'indent': 4})
+
+                context = self.get_context_data(**kwargs)  # Получаем контекст, если он есть
+                context["form"] = form  # Записываем в контекст форму
+                return self.render_to_response(context)  # Возвращаем вызов метода render_to_response
+
+
+class MyFormView(FormView):
+    template_name = 'app/template_form.html'
+    form_class = TemplateForm
+    success_url = '/'
+
+    def form_valid(self, form):
+        return JsonResponse(form.cleaned_data)
+
+
 
 def login_view(request):
     if request.method == "GET":
@@ -59,6 +127,12 @@ def login_view(request):
             login(request, user)
             return redirect("app:user_profile")
     return render(request, template_name='app/login.html', context={'form': form})
+
+class MyLoginView(LoginView):
+    template_name = 'app/login.html'
+    redirect_authenticated_user = True  # Данный флаг не позволит авторизированному
+    # пользователю зайти на страницу с авторизацией и сразу его перенаправит на
+    # ссылку редиректа. По умолчанию redirect_authenticated_user = False
 
 def logout_view(request):
     if request.method == "GET":

@@ -134,3 +134,8 @@ LOGIN_REDIRECT_URL = '/profile/' # Чтобы после авторизации 
 #SOCIAL_AUTH_GITHUB_KEY = ''
 #SOCIAL_AUTH_GITHUB_SECRET = ''
 SOCIAL_AUTH_GITHUB_SCOPE = ['user:email', 'read:user']
+
+LOGIN_REDIRECT_URL = '/profile/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # Пример настроек для использования консольного бэкенда (для тестирования)
+
